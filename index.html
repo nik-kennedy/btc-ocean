@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>BTC Ocean</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Main ocean canvas -->
+  <canvas id="btc-ocean"></canvas>
+
+  <!-- Minimal UI (hidden until hover) -->
+  <div id="ui-overlay">
+    <div id="camera-menu">
+      <span data-camera="shoreline">Shoreline</span>
+      <span data-camera="cliff">Cliff</span>
+      <span data-camera="drone">Drone</span>
+      <span data-camera="underwater">Underwater</span>
+      <span data-camera="cosmic">Cosmic</span>
+    </div>
+    <div id="footer">
+      BTC Ocean — Human Experience, AI Truth
+    </div>
+  </div>
+
+  <script src="ocean.js"></script>
+  <script src="camera.js"></script>
+</body>
+</html>
