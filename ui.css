@@ -1,0 +1,40 @@
+/* BTC Ocean — UI Polish (Version 1)
+   Enhances camera menu, footer, hover behavior, spacing, blur aesthetics */
+
+/* Smooth fade-in for UI overlay */
+#ui-overlay {
+  transition: opacity 0.4s ease;
+}
+
+/* Camera menu container */
+#camera-menu {
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(79, 179, 255, 0.2); /* lightning blue edge */
+  box-shadow: 0 0 12px rgba(79, 179, 255, 0.15);
+}
+
+/* Camera menu items */
+#camera-menu span {
+  padding: 4px 0;
+  letter-spacing: 0.5px;
+}
+
+/* Hover glow */
+#camera-menu span:hover {
+  text-shadow: 0 0 6px rgba(92, 200, 255, 0.6);
+}
+
+/* Footer polish */
+#footer {
+  backdrop-filter: blur(4px);
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: 1px solid rgba(79, 179, 255, 0.15);
+  box-shadow: 0 0 10px rgba(79, 179, 255, 0.1);
+}
+
+/* Footer hover brighten */
+#footer:hover {
+  opacity: 1;
+  text-shadow: 0 0 6px rgba(92, 200, 255, 0.6);
+}
