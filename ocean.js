@@ -1,73 +1,78 @@
-// BTC Ocean — Canvas Engine (Version 2)
-// Now connected to SkyEngine, SwellEngine, WavePhysics, DataEngine
-
 let waveOffset = 0;
 
-const canvas = document.getElementById("btc-ocean");
-const ctx = canvas.getContext("2d");
+// Core colors (stylized ocean palette)
+const COLORS = {
+  deep: "#003f5c",       // deep liquidity
+  mid: "#2f4b7c",        // mid-depth
+  shallow: "#665191",    // shallow liquidity
+  sand: "#f6d6a8",       // accumulation zone
+  foam: "#ffffff",       // volatility crest
+  skyTop: "#87CEEB",     // sentiment sky
+  skyBottom: "#B0E0E6"   // horizon blend
+};
 
-// Resize canvas to full screen
-function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+function drawSky(ctx, width, height) {
+  const sky = ctx.createLinearGradient(0, 0, 0, height * 0.4);
+  sky.addColorStop(0, COLORS.skyTop);
+  sky.addColorStop(1, COLORS.skyBottom);
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, width, height * 0.4);
 }
-resizeCanvas();
-window.addEventListener("resize", resizeCanvas);
 
-// Global wave parameters (WavePhysics will override these)
-window.waveHeight = 20;
-window.waveFroth = 0.0;
-window.macroSwell = 0.0;
-
-// Main animation loop
-function animate() {
-  SkyEngine.applyToOcean(ctx, canvas);  // draw sky
-  SwellEngine.draw(ctx, canvas);        // draw macro swell
-  drawOcean();                          // draw waves
-  requestAnimationFrame(animate);
+function drawSand(ctx, width, height) {
+  ctx.fillStyle = COLORS.sand;
+  ctx.fillRect(0, height * 0.85, width, height * 0.15);
 }
-animate();
 
-// --- OCEAN -----------------------------------------------------------
+function drawOcean(ctx, width, height) {
+  const oceanHeight = height * 0.85;
 
-function drawOcean() {
-  const oceanTop = canvas.height * 0.6;
+  // Depth gradient
+  const oceanGrad = ctx.createLinearGradient(0, height * 0.4, 0, oceanHeight);
+  oceanGrad.addColorStop(0, COLORS.deep);
+  oceanGrad.addColorStop(0.5, COLORS.mid);
+  oceanGrad.addColorStop(1, COLORS.shallow);
 
-  // Ocean background gradient
-  const oceanGradient = ctx.createLinearGradient(0, oceanTop, 0, canvas.height);
-  oceanGradient.addColorStop(0, "#0a1a2f"); // deep navy
-  oceanGradient.addColorStop(1, "#1c1f22"); // charcoal
+  ctx.fillStyle = oceanGrad;
+  ctx.fillRect(0, height * 0.4, width, oceanHeight - height * 0.4);
 
-  ctx.fillStyle = oceanGradient;
-  ctx.fillRect(0, oceanTop, canvas.width, canvas.height);
-
-  // Waves (WavePhysics controls height + speed)
-  const waveHeight = window.waveHeight;
-  const waveLength = 180;
-  waveOffset += WavePhysics.speed;
-
-  ctx.beginPath();
-  ctx.moveTo(0, oceanTop);
-
-  for (let x = 0; x < canvas.width; x++) {
-    const y =
-      oceanTop +
-      Math.sin((x + waveOffset * 200) / waveLength) * waveHeight +
-      window.macroSwell * 0.2; // macro swell influence
-    ctx.lineTo(x, y);
-  }
-
-  ctx.lineTo(canvas.width, canvas.height);
-  ctx.lineTo(0, canvas.height);
-  ctx.closePath();
-
-  ctx.fillStyle = "#1c1f22"; // charcoal wave fill
-  ctx.fill();
-
-  // Foam (volatility)
-  if (window.waveFroth > 0.05) {
-    ctx.strokeStyle = "rgba(199, 209, 217, " + window.waveFroth + ")";
-    ctx.lineWidth = 1.2;
+  // Stylized swell bands
+  for (let i = 0; i < 5; i++) {
+    const y = height * 0.4 + i * 40 + Math.sin(waveOffset + i) * 10;
+    ctx.strokeStyle = COLORS.mid;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(width, y);
     ctx.stroke();
   }
+
+  // Foam line (volatility crest)
+  const foamY = height * 0.75 + Math.sin(waveOffset * 1.5) * 8;
+  ctx.strokeStyle = COLORS.foam;
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(0, foamY);
+  ctx.lineTo(width, foamY);
+  ctx.stroke();
 }
+
+function animate() {
+  const canvas = document.getElementById("oceanCanvas");
+  const ctx = canvas.getContext("2d");
+
+  const width = canvas.width;
+  const height = canvas.height;
+
+  ctx.clearRect(0, 0, width, height);
+
+  drawSky(ctx, width, height);
+  drawOcean(ctx, width, height);
+  drawSand(ctx, width, height);
+
+  waveOffset += 0.02;
+
+  requestAnimationFrame(animate);
+}
+
+animate();
