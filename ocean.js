@@ -75,4 +75,4 @@ function animate() {
   requestAnimationFrame(animate);
 }
 
-animate();
+window.onload = animate;
