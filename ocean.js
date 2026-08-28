@@ -1,5 +1,5 @@
-// BTC Ocean — Canvas Engine (Version 1)
-// Minimalist storm-building ocean foundation
+// BTC Ocean — Canvas Engine (Version 2)
+// Now connected to SkyEngine, SwellEngine, WavePhysics, DataEngine
 
 const canvas = document.getElementById("btc-ocean");
 const ctx = canvas.getContext("2d");
@@ -12,42 +12,26 @@ function resizeCanvas() {
 resizeCanvas();
 window.addEventListener("resize", resizeCanvas);
 
-// Ocean state
-let waveOffset = 0;
-let skyMood = 0.4; // 0 = fear (dark), 1 = greed (bright)
+// Global wave parameters (WavePhysics will override these)
+window.waveHeight = 20;
+window.waveFroth = 0.0;
+window.macroSwell = 0.0;
 
 // Main animation loop
 function animate() {
-  drawSky();
-  drawOcean();
+  SkyEngine.applyToOcean(ctx, canvas);  // draw sky
+  SwellEngine.draw(ctx, canvas);        // draw macro swell
+  drawOcean();                          // draw waves
   requestAnimationFrame(animate);
 }
 animate();
-
-// --- SKY -------------------------------------------------------------
-
-function drawSky() {
-  const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height * 0.6);
-
-  // Storm-building sky (Fear & Greed mood)
-  const darkGrey = "#2a2e33";
-  const steelBlue = "#3c4f63";
-  const lightningBlue = "#4fb3ff";
-
-  gradient.addColorStop(0, darkGrey);
-  gradient.addColorStop(0.7, steelBlue);
-  gradient.addColorStop(1, lightningBlue);
-
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, canvas.width, canvas.height * 0.6);
-}
 
 // --- OCEAN -----------------------------------------------------------
 
 function drawOcean() {
   const oceanTop = canvas.height * 0.6;
 
-  // Ocean background
+  // Ocean background gradient
   const oceanGradient = ctx.createLinearGradient(0, oceanTop, 0, canvas.height);
   oceanGradient.addColorStop(0, "#0a1a2f"); // deep navy
   oceanGradient.addColorStop(1, "#1c1f22"); // charcoal
@@ -55,10 +39,10 @@ function drawOcean() {
   ctx.fillStyle = oceanGradient;
   ctx.fillRect(0, oceanTop, canvas.width, canvas.height);
 
-  // Waves (simple sine wave for now)
-  const waveHeight = 20;
+  // Waves (WavePhysics controls height + speed)
+  const waveHeight = window.waveHeight;
   const waveLength = 180;
-  waveOffset += 0.015; // smooth motion
+  waveOffset += WavePhysics.speed;
 
   ctx.beginPath();
   ctx.moveTo(0, oceanTop);
@@ -66,7 +50,8 @@ function drawOcean() {
   for (let x = 0; x < canvas.width; x++) {
     const y =
       oceanTop +
-      Math.sin((x + waveOffset * 200) / waveLength) * waveHeight;
+      Math.sin((x + waveOffset * 200) / waveLength) * waveHeight +
+      window.macroSwell * 0.2; // macro swell influence
     ctx.lineTo(x, y);
   }
 
@@ -77,8 +62,10 @@ function drawOcean() {
   ctx.fillStyle = "#1c1f22"; // charcoal wave fill
   ctx.fill();
 
-  // Foam highlight
-  ctx.strokeStyle = "#c7d1d9"; // silver foam
-  ctx.lineWidth = 1.2;
-  ctx.stroke();
+  // Foam (volatility)
+  if (window.waveFroth > 0.05) {
+    ctx.strokeStyle = "rgba(199, 209, 217, " + window.waveFroth + ")";
+    ctx.lineWidth = 1.2;
+    ctx.stroke();
+  }
 }
