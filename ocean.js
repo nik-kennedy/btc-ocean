@@ -1,6 +1,8 @@
 // BTC Ocean — Canvas Engine (Version 2)
 // Now connected to SkyEngine, SwellEngine, WavePhysics, DataEngine
 
+let waveOffset = 0;
+
 const canvas = document.getElementById("btc-ocean");
 const ctx = canvas.getContext("2d");
 
