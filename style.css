@@ -1,0 +1,68 @@
+/* Full-screen ocean canvas */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: #1c1f22; /* storm grey */
+  font-family: Arial, sans-serif;
+}
+
+/* Canvas fills the entire screen */
+#btc-ocean {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* UI overlay (hidden until hover) */
+#ui-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+
+/* Camera menu (appears on hover) */
+#camera-menu {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: rgba(30, 34, 38, 0.6); /* storm grey blur */
+  padding: 10px 15px;
+  border-radius: 6px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: auto;
+}
+
+#camera-menu span {
+  display: block;
+  color: #4fb3ff; /* lightning blue */
+  margin: 6px 0;
+  cursor: pointer;
+  font-size: 14px;
+  transition: color 0.3s ease;
+}
+
+#camera-menu span:hover {
+  color: #5cc8ff; /* brighter lightning */
+}
+
+/* Reveal UI on hover */
+#ui-overlay:hover #camera-menu {
+  opacity: 1;
+}
+
+/* Footer */
+#footer {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  color: #4fb3ff;
+  font-size: 12px;
+  opacity: 0.6;
+}
